@@ -1,0 +1,82 @@
+/* ===== General ===== */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #f8f9fa;
+}
+
+main {
+    flex: 1;
+}
+
+/* ===== Product Cards ===== */
+.product-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: none;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+.product-img {
+    height: 200px;
+    object-fit: cover;
+}
+
+.product-img-placeholder {
+    height: 200px;
+}
+
+/* ===== Category Cards ===== */
+.category-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 2px solid #e9ecef;
+}
+
+.category-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-color: #0d6efd;
+}
+
+/* ===== Hero Section ===== */
+.hero-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.hero-section .lead {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.hero-section .btn-primary {
+    background-color: white;
+    color: #667eea;
+    border: none;
+    font-weight: 600;
+}
+
+.hero-section .btn-primary:hover {
+    background-color: #f0f0f0;
+    color: #5a67d8;
+}
+
+/* ===== Navbar ===== */
+.navbar-brand i {
+    margin-right: 4px;
+}
+
+/* ===== Footer ===== */
+footer {
+    margin-top: auto;
+}
+
+/* ===== Forms ===== */
+.form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}

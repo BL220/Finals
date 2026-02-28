@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ product.name }} — Tech Store{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 mb-4">
+        {% if product.image %}
+        <img src="{{ product.image.url }}" class="img-fluid rounded shadow" alt="{{ product.name }}">
+        {% else %}
+        <div class="d-flex align-items-center justify-content-center bg-light rounded shadow" style="height: 400px;">
+            <i class="bi bi-image text-muted" style="font-size: 5rem;"></i>
+        </div>
+        {% endif %}
+    </div>
+    <div class="col-md-6">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'category_products' product.category.slug %}">{{ product.category.name }}</a></li>
+                <li class="breadcrumb-item active">{{ product.name }}</li>
+            </ol>
+        </nav>
+
+        <h2>{{ product.name }}</h2>
+        <span class="badge bg-secondary mb-3">{{ product.category.name }}</span>
+
+        <p class="fs-3 text-primary fw-bold">${{ product.price }}</p>
+
+        <p>{{ product.description }}</p>
+
+        {% if product.stock > 0 %}
+        <p class="text-success"><i class="bi bi-check-circle"></i> In Stock ({{ product.stock }} available)</p>
+        <a href="{% url 'add_to_cart' product.pk %}" class="btn btn-primary btn-lg">
+            <i class="bi bi-cart-plus"></i> Add to Cart
+        </a>
+        {% else %}
+        <p class="text-danger"><i class="bi bi-x-circle"></i> Out of Stock</p>
+        <button class="btn btn-secondary btn-lg" disabled>Out of Stock</button>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
