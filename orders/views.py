@@ -1,10 +1,30 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
+from django.views.generic import ListView
 from store.models import CartItem
 from .models import Order, OrderItem
 from .forms import OrderForm
 
+
+# ──────────────────────────────────────────────
+#  Class-Based View (Week 14 — CBV)
+# ──────────────────────────────────────────────
+
+class OrderHistoryView(LoginRequiredMixin, ListView):
+    """Displays the logged-in user's order history."""
+    model = Order
+    template_name = 'orders/order_history.html'
+    context_object_name = 'orders'
+
+    def get_queryset(self):
+        return Order.objects.filter(user=self.request.user).prefetch_related('items__product')
+
+
+# ──────────────────────────────────────────────
+#  Function-Based View (checkout — complex logic)
+# ──────────────────────────────────────────────
 
 @login_required
 def checkout(request):
@@ -42,12 +62,4 @@ def checkout(request):
         'form': form,
         'cart_items': cart_items,
         'total': total,
-    })
-
-
-@login_required
-def order_history(request):
-    orders = Order.objects.filter(user=request.user).prefetch_related('items__product')
-    return render(request, 'orders/order_history.html', {
-        'orders': orders,
     })
