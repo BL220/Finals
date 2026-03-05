@@ -7,13 +7,8 @@ from .models import Order
 logger = logging.getLogger(__name__)
 
 
-# ──────────────────────────────────────────────
-#  Django Signals (Week 16 — Signals)
-# ──────────────────────────────────────────────
-
 @receiver(post_save, sender=Order)
 def order_status_changed(sender, instance, created, **kwargs):
-    """Log a message when a new order is created or status changes."""
     if created:
         logger.info('New order #%s created by user "%s".', instance.pk, instance.user.username)
     else:
@@ -22,6 +17,5 @@ def order_status_changed(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=User)
 def new_user_registered(sender, instance, created, **kwargs):
-    """Log a welcome message when a new user registers."""
     if created:
         logger.info('New user registered: "%s".', instance.username)

@@ -19,7 +19,7 @@
         </thead>
         <tbody>
             {% for item in cart_items %}
-            <tr>
+            <tr data-row-id="{{ item.pk }}">
                 <td>
                     <div class="d-flex align-items-center">
                         {% if item.product.image %}
@@ -33,18 +33,16 @@
                         </div>
                     </div>
                 </td>
-                <td>${{ item.product.price }}</td>
+                <td data-price="{{ item.product.price }}">${{ item.product.price }}</td>
                 <td>
-                    <form method="post" action="{% url 'update_cart' item.pk %}" class="d-flex align-items-center"
-                        style="width: 120px;">
+                    <form method="post" action="{% url 'update_cart' item.pk %}" class="quantity-form">
                         {% csrf_token %}
                         <input type="number" name="quantity" value="{{ item.quantity }}" min="0"
-                            max="{{ item.product.stock }}" class="form-control form-control-sm me-1">
-                        <button type="submit" class="btn btn-sm btn-outline-secondary"><i
-                                class="bi bi-arrow-clockwise"></i></button>
+                            max="{{ item.product.stock }}" class="form-control form-control-sm quantity-input"
+                            style="width: 80px;" data-price="{{ item.product.price }}">
                     </form>
                 </td>
-                <td class="fw-bold">${{ item.subtotal }}</td>
+                <td class="fw-bold subtotal-cell">${{ item.subtotal }}</td>
                 <td>
                     <a href="{% url 'remove_from_cart' item.pk %}" class="btn btn-sm btn-outline-danger">
                         <i class="bi bi-trash"></i> Remove
@@ -56,7 +54,7 @@
         <tfoot>
             <tr>
                 <td colspan="3" class="text-end fw-bold fs-5">Total:</td>
-                <td class="fw-bold fs-5 text-primary">${{ total }}</td>
+                <td class="fw-bold fs-5 text-primary" id="cart-total">${{ total }}</td>
                 <td></td>
             </tr>
         </tfoot>
@@ -71,6 +69,29 @@
         <i class="bi bi-credit-card"></i> Proceed to Checkout
     </a>
 </div>
+
+<script>
+    document.querySelectorAll('.quantity-input').forEach(function (input) {
+        input.addEventListener('change', function () {
+            var price = parseFloat(this.dataset.price);
+            var quantity = parseInt(this.value) || 0;
+            var subtotal = (price * quantity).toFixed(2);
+
+            var row = this.closest('tr');
+            row.querySelector('.subtotal-cell').textContent = '$' + subtotal;
+
+            var total = 0;
+            document.querySelectorAll('.quantity-input').forEach(function (inp) {
+                var p = parseFloat(inp.dataset.price);
+                var q = parseInt(inp.value) || 0;
+                total += p * q;
+            });
+            document.getElementById('cart-total').textContent = '$' + total.toFixed(2);
+
+            this.closest('.quantity-form').submit();
+        });
+    });
+</script>
 
 {% else %}
 <div class="text-center py-5">

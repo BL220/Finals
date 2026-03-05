@@ -8,12 +8,7 @@ from .models import Order, OrderItem
 from .forms import OrderForm
 
 
-# ──────────────────────────────────────────────
-#  Class-Based View (Week 14 — CBV)
-# ──────────────────────────────────────────────
-
 class OrderHistoryView(LoginRequiredMixin, ListView):
-    """Displays the logged-in user's order history."""
     model = Order
     template_name = 'orders/order_history.html'
     context_object_name = 'orders'
@@ -21,10 +16,6 @@ class OrderHistoryView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return Order.objects.filter(user=self.request.user).prefetch_related('items__product')
 
-
-# ──────────────────────────────────────────────
-#  Function-Based View (checkout — complex logic)
-# ──────────────────────────────────────────────
 
 @login_required
 def checkout(request):
@@ -47,7 +38,6 @@ def checkout(request):
                     quantity=item.quantity,
                     price=item.product.price,
                 )
-                # Decrement stock
                 item.product.stock -= item.quantity
                 item.product.save()
 

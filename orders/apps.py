@@ -6,4 +6,4 @@ class OrdersConfig(AppConfig):
     name = 'orders'
 
     def ready(self):
-        import orders.signals  # noqa: F401 — connect signals
+        import orders.signals

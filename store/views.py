@@ -8,10 +8,6 @@ from django.urls import reverse_lazy
 from .models import Category, Product, CartItem
 
 
-# ──────────────────────────────────────────────
-#  Function-Based View (home page)
-# ──────────────────────────────────────────────
-
 def home(request):
     categories = Category.objects.all()
     featured_products = Product.objects.filter(is_available=True)[:8]
@@ -21,12 +17,7 @@ def home(request):
     })
 
 
-# ──────────────────────────────────────────────
-#  Class-Based Views  (Week 14 — CBV)
-# ──────────────────────────────────────────────
-
 class ProductListView(ListView):
-    """Displays a paginated list of available products."""
     model = Product
     template_name = 'store/product_list.html'
     context_object_name = 'products'
@@ -34,10 +25,12 @@ class ProductListView(ListView):
 
     def get_queryset(self):
         queryset = Product.objects.filter(is_available=True)
-        # Filter by category slug if present in the URL
         slug = self.kwargs.get('slug')
         if slug:
             queryset = queryset.filter(category__slug=slug)
+        query = self.request.GET.get('q')
+        if query:
+            queryset = queryset.filter(name__icontains=query)
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -49,14 +42,12 @@ class ProductListView(ListView):
 
 
 class ProductDetailView(DetailView):
-    """Displays a single product's details."""
     model = Product
     template_name = 'store/product_detail.html'
     context_object_name = 'product'
 
 
 class RegisterView(CreateView):
-    """User registration using Django's built-in UserCreationForm."""
     form_class = UserCreationForm
     template_name = 'registration/register.html'
     success_url = reverse_lazy('login')
@@ -66,10 +57,6 @@ class RegisterView(CreateView):
         messages.success(self.request, 'Account created successfully! Please log in.')
         return result
 
-
-# ──────────────────────────────────────────────
-#  Function-Based Views (cart — POST-heavy logic)
-# ──────────────────────────────────────────────
 
 @login_required
 def add_to_cart(request, pk):
